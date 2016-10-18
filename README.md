@@ -48,3 +48,6 @@ This is a simple, naive page view counter. Whenever the Grav system produces a p
 
 After the view count is incremented, the full view count data is dumped as an associative array (i.e., route -> count) into the `config.plugins.count-views.count` namespace so you can access it via twig (e.g., `{{ config.plugins['count-views'].counts['/blog/my-slug'] }}`).
 
+## Performance
+
+Obviously there is a hit because the plugin has to access a physical file on the drive. In my personal experience, I haven't noticed any meaningful difference. Any suggestions to improve performance would be warmly welcomed.
