@@ -1,0 +1,4 @@
+enabled: true
+datadir: ''
+datafile: count-views.yaml
+
