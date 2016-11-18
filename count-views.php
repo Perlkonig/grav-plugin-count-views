@@ -41,36 +41,51 @@ class CountViewsPlugin extends Plugin
 
         // Enable the main event we are interested in
         $this->enable([
+            'onPagesInitialized' => ['onPagesInitialized', 0],
             'onPageInitialized' => ['onPageInitialized', 0]
         ]);
     }
 
-    /**
-     * Do some work for this event, full details of events can be found
-     * on the learn site: http://learn.getgrav.org/plugins/event-hooks
-     *
-     * @param Event $e
-     */
-    public function onPageInitialized(Event $e)
+    // This loads the existing data into Twig
+    public function onPagesInitialized(Event $e)
     {
         // Get count data file
         $config = $this->grav['config'];
         $locator = $this->grav['locator'];
         $path = $locator->findResource('user://data', true);
-        $datadir = $config->get('plugins.count-views.datadir', '');
-        $datafile = $config->get('plugins.count-views.datafile', 'count-views.yaml');
-        if (! empty($datadir)) {
-            $filename = $path . DS . $datadir . DS . $datafile;
-        } else {
-            $filename = $path . DS . $datafile;
-        }
+        $path .= DS.static::sanitize($this->grav['config']->get('plugins.count-views.datafile'));
 
         // Get page route
         $page = $this->grav['page'];
         $route = $page->route();
 
         // Open data file
-        $datafh = File::instance($filename);
+        $datafh = File::instance($path);
+        $data = Yaml::parse($datafh->content());
+        $datafh->free();
+
+        // Load count data into a twig variable
+        $this->grav['twig']->twig_vars['viewcounts'] = $data;
+
+        // DEPRECATED! Load count data into `config.plugins` space
+        $this->config->set('plugins.count-views.counts', $data);
+    }
+
+    // This increments the counter
+    public function onPageInitialized(Event $e)
+    {
+        // Get count data file
+        $config = $this->grav['config'];
+        $locator = $this->grav['locator'];
+        $path = $locator->findResource('user://data', true);
+        $path .= DS.static::sanitize($this->grav['config']->get('plugins.count-views.datafile'));
+
+        // Get page route
+        $page = $this->grav['page'];
+        $route = $page->route();
+
+        // Open data file
+        $datafh = File::instance($path);
         $datafh->lock();
         $data = Yaml::parse($datafh->content());
         if ($data === null) {
@@ -84,11 +99,16 @@ class CountViewsPlugin extends Plugin
             $data[$route] = 1;
         }
 
-        // Load count data into `config.plugins` space
-        $this->config->set('plugins.count-views.counts', $data);
-
         // Save 
         $datafh->save(YAML::dump($data));
         $datafh->free();
+    }
+
+    private static function sanitize($fn) {
+        $fn = trim($fn);
+        $fn = str_replace('..', '', $fn);
+        $fn = ltrim($fn, DS);
+        $fn = str_replace(DS.DS, DS, $fn);
+        return $fn;
     }
 }

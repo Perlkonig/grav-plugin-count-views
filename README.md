@@ -22,7 +22,7 @@ You should now have all the plugin files under
 
     /your/site/grav/user/plugins/count-views
 	
-> NOTE: This plugin is a modular component for Grav which requires [Grav](http://github.com/getgrav/grav) and the [Error](https://github.com/getgrav/grav-plugin-error) and [Problems](https://github.com/getgrav/grav-plugin-problems) to operate.
+> NOTE: This plugin is a modular component for Grav which requires [Grav](http://github.com/getgrav/grav) and the [Error](https://github.com/getgrav/grav-plugin-error) and [Problems](https://github.com/getgrav/grav-plugin-problems) plugins to operate.
 
 ## Configuration
 
@@ -32,21 +32,18 @@ Here is the default configuration and an explanation of available options:
 
 ```yaml
 enabled: true
-datadir: ''
 datafile: count-views.yaml
 ```
 
   * The `enabled` field lets you turn the plugin off and on.
 
-  * `datadir` is a folder relative to the `user/data` folder where the count data will be stored.
-
-  * `datafile` is the name of the file that contains the count data.
+  * `datafile` is the path and name of the file that contains the count data, relative to `user/data`.
 
 ## Usage
 
 This is a simple, naive page view counter. Whenever the Grav system produces a page (cached or not), the route is stored and the count incremented. Obviously if you have a front-end cache that delivers the page without invoking `index.php`, then the view won't be counted. You also can't filter out views by IP or user (though pull requests are always welcome).
 
-After the view count is incremented, the full view count data is dumped as an associative array (i.e., route -> count) into the `config.plugins.count-views.counts` namespace so you can access it via twig (e.g., `{{ config.plugins['count-views'].counts['/blog/my-slug'] }}`).
+The full view count data is dumped as an associative array (i.e., route => count) into the Twig variable `viewcounts`. To support backwards compatibility, the counts are also still dumped into the `config.plugins.count-views.counts` namespace, but this is now officially deprecated and will be removed in a future major release.
 
 ## Performance
 
