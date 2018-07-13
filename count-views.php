@@ -58,6 +58,7 @@ class CountViewsPlugin extends Plugin
         // Get page route
         $page = $this->grav['page'];
         $route = $page->route();
+        if (empty($route)) $route = $this->config->get('plugins.error.routes.404', '/error');
 
         // Open data file
         $datafh = File::instance($path);
@@ -83,6 +84,7 @@ class CountViewsPlugin extends Plugin
         // Get page route
         $page = $this->grav['page'];
         $route = $page->route();
+        if (empty($route)) $route = $this->config->get('plugins.error.routes.404', '/error');
 
         // Open data file
         $datafh = File::instance($path);
