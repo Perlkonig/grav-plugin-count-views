@@ -1,3 +1,11 @@
+# v3.0.0
+## 07/13/2018
+
+1. [](#new)
+    * Empty route is now coded as the 404 route (default `/error/404`), thanks to @Kage.
+    * Removing the deprecated interface. Use the `viewcounts` array.
+    * Added some concrete examples to the README and linked to the demo page.
+
 # v2.0.0
 ##  11/17/2016
 
