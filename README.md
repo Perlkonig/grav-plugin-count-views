@@ -45,6 +45,14 @@ This is a simple, naive page view counter. Whenever the Grav system produces a p
 
 The full view count data is dumped as an associative array (i.e., route => count) into the Twig variable `viewcounts`. To support backwards compatibility, the counts are also still dumped into the `config.plugins.count-views.counts` namespace, but this is now officially deprecated and will be removed in a future major release.
 
+So to get the counts associated with a specific route, use the following code:
+
+`{{ viewcounts[page.route] }}`
+
+To get a list of, say, the top 10 routes, you could use the following code:
+
+`{% for route,views in viewcounts|sort|reverse|slice(0,10) %}`
+
 ## Performance
 
 Obviously there is a hit because the plugin has to access a physical file on the drive. In my personal experience, I haven't noticed any meaningful difference. Any suggestions to improve performance would be warmly welcomed.
