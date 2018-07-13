@@ -53,6 +53,8 @@ To get a list of, say, the top 10 routes, you could use the following code:
 
 `{% for route,views in viewcounts|sort|reverse|slice(0,10) %}`
 
+Also, this was one of my first plugins, before I understood the problem PHP had with hyphens in names. To use this plugin with dot notation, you need to do it as follows: `{% if config.plugins['count-views'].enabled %}`.
+
 ## Performance
 
 Obviously there is a hit because the plugin has to access a physical file on the drive. In my personal experience, I haven't noticed any meaningful difference. Any suggestions to improve performance would be warmly welcomed.
